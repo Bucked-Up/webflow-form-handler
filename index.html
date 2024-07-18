@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.3.2/build/css/intlTelInput.css">
+  </link>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.3.2/build/js/intlTelInput.min.js"></script>
+  <style>
+    .iti {
+      width: 100%;
+    }
+  </style>
+
+
+<title>Document</title>
+</head>
+
+<body>
+  <form id="test-form" name="test-form">
+    <input name="first_name" placeholder="name" required>
+    <input name="email" placeholder="mail" required>
+    <input name="phone_number" id="phone_number">
+    <button type="submit" id="submit">SUBMIT</button>
+  </form>
+</body>
+
+<script src="/script.js"></script>
+<script>
+  handleForm({
+    formId: "test-form",
+    submitBtnId: "submit",
+    hasPhoneNumber: true,
+    phoneNumberIsRequired: false,
+    customTextFields: [],
+    customCheckFields: [],
+    customUrlFields: ["utm_source", "utm_medium", "utm_content", "gclid", "fbclid"],
+    klaviyoA: "",
+    klaviyoG: "",
+    submitFunction: () => {},
+  });
+</script>
+
+</html>

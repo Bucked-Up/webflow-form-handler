@@ -70,7 +70,7 @@ const handleForm = ({
     });
     phoneField.addEventListener("input", () => {
       if (phoneNumberIsNotValid()) {
-        submitBtn.setAttribute("disabled", "disabled");
+        disableSubmitBtn();
       } else {
         submitBtn.removeAttribute("disabled");
         phoneField.style = "";

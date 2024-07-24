@@ -102,7 +102,7 @@ const handleForm = ({
       phoneField.value.trim === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
     }
 
-    formData.append("$fields", [...customTextFields, ...customCheckFields, ...customUrlFields]);
+    formData.append("$fields", [...customTextFields, ...customCheckFields, ...customUrlFields, ...forceChecksTrue]);
     customUrlFields.forEach((urlParam) => {
       formData.append(urlParam, urlParams.get(urlParam));
     });

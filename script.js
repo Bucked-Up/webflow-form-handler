@@ -102,8 +102,18 @@ const handleForm = ({
       phoneField.value.trim === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
     }
 
-    formData.append("$fields", [...customTextFields, ...customCheckFields, ...customUrlFields, ...forceChecksTrue]);
-    customUrlFields.forEach((urlParam) => {
+    formData.append("$fields", [
+      "utm_source",
+      "utm_medium",
+      "utm_content",
+      "gclid",
+      "fbclid",
+      ...customTextFields,
+      ...customCheckFields,
+      ...customUrlFields,
+      ...forceChecksTrue,
+    ]);
+    ["utm_source", "utm_medium", "utm_content", "gclid", "fbclid", ...customUrlFields].forEach((urlParam) => {
       formData.append(urlParam, urlParams.get(urlParam));
     });
 

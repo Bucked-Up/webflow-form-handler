@@ -21,7 +21,7 @@
     customTextFields: [],
     customCheckFields: [],
     forceChecksTrue: [],
-    customUrlFields: ["utm_source", "utm_medium", "utm_content", "gclid", "fbclid"],
+    customUrlFields: [],
     klaviyoA: "",
     klaviyoG: "",
     submitFunction: () => {},

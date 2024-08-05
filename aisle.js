@@ -39,6 +39,11 @@ const handleForm = ({ campaignPhoneNumber, apiKey, submitBtnId, formId }) => {
     }
   });
 
+  const handleError = () =>{
+    const p = document.querySelector(".success-message div");
+    if(p) p.innerHTML = "Oops! Something went wrong while submitting the form."
+  }
+
   form.addEventListener("submit", async () => {
     const body = {
       customerPhoneNumber: phoneField.value.replace(/\D/g, ''),
@@ -62,6 +67,7 @@ const handleForm = ({ campaignPhoneNumber, apiKey, submitBtnId, formId }) => {
       const data = await response.json();
       console.log("Success:", data);
     } catch (error) {
+      handleError();
       console.error("Error:", error);
     }
   });

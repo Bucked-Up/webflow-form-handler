@@ -94,6 +94,31 @@ const handleForm = ({
     });
   }
 
+  const handleError = () => {
+    const p = document.querySelector(".success-message div");
+    if (p) p.innerHTML = "Oops! Something went wrong while submitting the form.";
+  };
+
+  const formDone = document.querySelector(".w-form-done");
+
+  const initObserver = () => {
+    const targetElement = formDone;
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.attributeName === "style") {
+          const displayChanged = mutation.target.style.display !== mutation.oldValue;
+          if (displayChanged) {
+            submitFunction();
+          }
+        }
+      }
+    });
+    observer.observe(targetElement, {
+      attributes: true,
+      attributeOldValue: true,
+    });
+  };
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -127,33 +152,21 @@ const handleForm = ({
     });
 
     try {
-      const data = await fetch(`https://manage.kmail-lists.com/ajax/subscriptions/subscribe?a=${klaviyoA}&g=${klaviyoG}`, {
+      const response = await fetch(`https://manage.kmail-lists.com/ajax/subscriptions/subscribe?a=${klaviyoA}&g=${klaviyoG}`, {
         method: "POST",
         body: formData,
       });
-      const response = await data.json();
-      console.log(response);
+      if (!response.ok) {
+        throw new Error("Klaviyo Network response was not ok: " + response.statusText);
+      }
+      const data = await response.json();
+      if (!data.success) throw new Error("Error sending to klaviyo: " + data.errors);
+      console.log(data);
+      if (formDone.style.display === "block") submitFunction();
+      else initObserver();
     } catch (e) {
-      console.warn("Error sending to klaviyo", e);
+      handleError();
+      console.error(e);
     }
   });
-
-  const initObserver = () => {
-    const targetElement = document.querySelector(".w-form-done");
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.attributeName === "style") {
-          const displayChanged = mutation.target.style.display !== mutation.oldValue;
-          if (displayChanged) {
-            submitFunction();
-          }
-        }
-      }
-    });
-    observer.observe(targetElement, {
-      attributes: true,
-      attributeOldValue: true,
-    });
-  };
-  initObserver();
 };

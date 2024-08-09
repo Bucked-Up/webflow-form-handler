@@ -29,7 +29,6 @@
 </script>
 ```
 
-
 ### Aisle
 
 ```
@@ -40,6 +39,9 @@
     apiKey: "",
     submitBtnId: "",
     formId: "",
+    klaviyoA: "",
+    klaviyoG: "",
+    submitFunction: ()=>{},
   })
 </script>
 ```

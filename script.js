@@ -11,6 +11,23 @@ const handleForm = ({
   klaviyoG,
   submitFunction = () => {},
 }) => {
+  const trySentry = ({ error, message }) => {
+    try {
+      if (error) {
+        console.error(error);
+        Sentry.captureException(error);
+      } else {
+        console.error(message);
+        const sentryError = new Error();
+        sentryError.name = "Error";
+        sentryError.message = message;
+        Sentry.captureException(sentryError);
+      }
+    } catch (e) {
+      console.error("Error loading sentry.");
+    }
+  };
+
   const getTopLevelDomain = () => {
     const fullDomain = window.location.hostname;
     const domainRegex = /\.([a-z]{2,})\.([a-z]{2,})$/;
@@ -165,6 +182,7 @@ const handleForm = ({
       if (formDone.style.display === "block") submitFunction();
       else initObserver();
     } catch (e) {
+      trySentry({error: e})
       handleError();
       console.error(e);
     }

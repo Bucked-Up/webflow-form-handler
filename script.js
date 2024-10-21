@@ -47,7 +47,7 @@ const handleForm = ({
   const urlParams = new URLSearchParams(window.location.search);
 
   if (hasPhoneNumber) {
-    phoneField = document.getElementById("phone_number");
+    phoneField = form.querySelector("[name='phone_number']");
     const disableSubmitBtn = () => {
       submitBtn.setAttribute("disabled", "disabled");
       submitBtn.style.filter = "contrast(0.5)";
@@ -112,11 +112,11 @@ const handleForm = ({
   }
 
   const handleError = () => {
-    const p = document.querySelector(".success-message div");
+    const p = form.parentElement.querySelector(".w-form-done div");
     if (p) p.innerHTML = "Oops! Something went wrong while submitting the form.";
   };
 
-  const formDone = document.querySelector(".w-form-done");
+  const formDone = form.parentElement.querySelector(".w-form-done");
 
   const initObserver = () => {
     const targetElement = formDone;
@@ -142,49 +142,55 @@ const handleForm = ({
 
     if (hasPhoneNumber) {
       phoneField.value.trim === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
+      phoneField.value = iti.getNumber();
     }
 
-    formData.append("$fields", [
-      "utm_source",
-      "utm_medium",
-      "utm_content",
-      "gclid",
-      "fbclid",
-      ...customTextFields,
-      ...customCheckFields,
-      ...customUrlFields,
-      ...forceChecksTrue,
-    ]);
-    ["utm_source", "utm_medium", "utm_content", "gclid", "fbclid", ...customUrlFields].forEach((urlParam) => {
-      formData.append(urlParam, urlParams.get(urlParam));
-    });
-
-    customCheckFields.forEach((checkFieldId) => {
-      const field = document.getElementById(checkFieldId);
-      formData.set(checkFieldId, field.checked ? true : false);
-    });
-
-    forceChecksTrue.forEach((checkFieldId) => {
-      formData.set(checkFieldId, true);
-    });
-
-    try {
-      const response = await fetch(`https://manage.kmail-lists.com/ajax/subscriptions/subscribe?a=${klaviyoA}&g=${klaviyoG}`, {
-        method: "POST",
-        body: formData,
+    if (klaviyoA && klaviyoA !== "" && klaviyoG && klaviyoG !== "") {
+      formData.append("$fields", [
+        "utm_source",
+        "utm_medium",
+        "utm_content",
+        "gclid",
+        "fbclid",
+        ...customTextFields,
+        ...customCheckFields,
+        ...customUrlFields,
+        ...forceChecksTrue,
+      ]);
+      ["utm_source", "utm_medium", "utm_content", "gclid", "fbclid", ...customUrlFields].forEach((urlParam) => {
+        formData.append(urlParam, urlParams.get(urlParam));
       });
-      if (!response.ok) {
-        throw new Error("Klaviyo Network response was not ok: " + response.statusText);
+
+      customCheckFields.forEach((checkFieldId) => {
+        const field = document.getElementById(checkFieldId);
+        formData.set(checkFieldId, field.checked ? true : false);
+      });
+
+      forceChecksTrue.forEach((checkFieldId) => {
+        formData.set(checkFieldId, true);
+      });
+
+      try {
+        const response = await fetch(`https://manage.kmail-lists.com/ajax/subscriptions/subscribe?a=${klaviyoA}&g=${klaviyoG}`, {
+          method: "POST",
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error("Klaviyo Network response was not ok: " + response.statusText);
+        }
+        const data = await response.json();
+        if (!data.success) throw new Error("Error sending to klaviyo: " + data.errors);
+        console.log(data);
+        if (formDone.style.display === "block") submitFunction();
+        else initObserver();
+      } catch (e) {
+        trySentry({error: e})
+        handleError();
+        console.error(e);
       }
-      const data = await response.json();
-      if (!data.success) throw new Error("Error sending to klaviyo: " + data.errors);
-      console.log(data);
-      if (formDone.style.display === "block") submitFunction();
-      else initObserver();
-    } catch (e) {
-      trySentry({error: e})
-      handleError();
-      console.error(e);
-    }
+    } else if (formDone.style.display === "block") submitFunction();
+    else{
+      initObserver();
+    } 
   });
 };

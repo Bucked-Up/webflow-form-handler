@@ -16,6 +16,7 @@
   handleForm({
     formId: "",
     submitBtnId: "",
+    inputUtms: false,
     hasPhoneNumber: false,
     phoneNumberIsRequired: false,
     customTextFields: [],

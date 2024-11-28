@@ -1,16 +1,4 @@
-const handleForm = ({
-  formId,
-  submitBtnId,
-  hasPhoneNumber,
-  phoneNumberIsRequired,
-  customTextFields = [],
-  customCheckFields = [],
-  customUrlFields = [],
-  forceChecksTrue = [],
-  klaviyoA,
-  klaviyoG,
-  submitFunction = () => {},
-}) => {
+const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, customTextFields = [], customCheckFields = [], customUrlFields = [], forceChecksTrue = [], klaviyoA, klaviyoG, submitFunction = () => { } }) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -136,6 +124,16 @@ const handleForm = ({
     });
   };
 
+  const utms = ["utm_source", "utm_medium", "utm_content", "utm_campaign", "gclid", "fbclid", ...customUrlFields];
+  utms.forEach((utm) => {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.setAttribute("hidden", "hidden");
+    input.name = utm;
+    input.value = urlParams.get(utm);
+    form.appendChild(input);
+  });
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -146,20 +144,7 @@ const handleForm = ({
     }
 
     if (klaviyoA && klaviyoA !== "" && klaviyoG && klaviyoG !== "") {
-      formData.append("$fields", [
-        "utm_source",
-        "utm_medium",
-        "utm_content",
-        "gclid",
-        "fbclid",
-        ...customTextFields,
-        ...customCheckFields,
-        ...customUrlFields,
-        ...forceChecksTrue,
-      ]);
-      ["utm_source", "utm_medium", "utm_content", "gclid", "fbclid", ...customUrlFields].forEach((urlParam) => {
-        formData.append(urlParam, urlParams.get(urlParam));
-      });
+      formData.append("$fields", [...customTextFields, ...customCheckFields, ...forceChecksTrue]);
 
       customCheckFields.forEach((checkFieldId) => {
         const field = document.getElementById(checkFieldId);
@@ -184,13 +169,13 @@ const handleForm = ({
         if (formDone.style.display === "block") submitFunction();
         else initObserver();
       } catch (e) {
-        trySentry({error: e})
+        trySentry({ error: e });
         handleError();
         console.error(e);
       }
     } else if (formDone.style.display === "block") submitFunction();
-    else{
+    else {
       initObserver();
-    } 
+    }
   });
 };

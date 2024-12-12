@@ -11,33 +11,28 @@
 ```
 
 ```
-<script src="https://cdn.jsdelivr.net/gh/Bucked-Up/webflow-form-handler@2/script.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Bucked-Up/webflow-form-handler@1/script.js"></script>
 <script>
   handleForm({
     formId: "",
     submitBtnId: "",
     hasPhoneNumber: false,
     phoneNumberIsRequired: false,
-    ghl: { //optional
-      formId: "",
-      location_id: "",
-    },
-    klaviyo: { //optional
-      klaviyoA: "",
-      klaviyoG: "",
-      customTextFields: [], //optional
-      customCheckFields: [], //optional
-      forceChecksTrue: [], //optional
-    },
-    submitFunction: ()=>{}
-  })
+    customTextFields: [],
+    customCheckFields: [],
+    forceChecksTrue: [],
+    customUrlFields: [],
+    klaviyoA: "",
+    klaviyoG: "",
+    submitFunction: () => {},
+  });
 </script>
 ```
 
 ### Aisle
 
 ```
-<script src="https://cdn.jsdelivr.net/gh/Bucked-Up/webflow-form-handler@1/aisle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Bucked-Up/webflow-form-handler@1/aisle.js"></script>
 <script>
   handleForm({
     campaignPhoneNumber: "",

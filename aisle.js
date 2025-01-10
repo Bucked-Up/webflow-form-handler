@@ -116,27 +116,26 @@ const handleForm = ({ campaignPhoneNumber, apiKey, submitBtnId, formId, submitFu
     }
   };
 
-  form.addEventListener("submit", async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const utms = Object.fromEntries(urlParams.entries());
+  Object.keys(utms).forEach((key) => {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.setAttribute("hidden", "hidden");
+    input.name = key;
+    input.value = utms[key];
+    form.appendChild(input);
+  });
+
+  form.addEventListener("submit", async (e) => {
     const body = {
       customerPhoneNumber: phoneField.value.replace(/\D/g, ''),
       campaignPhoneNumber: campaignPhoneNumber,
       email: emailField.value,
     };
-    const formData = new FormData();
-    const urlParams = new URLSearchParams(window.location.search);
+    const formData = new FormData(e.target);
 
-    const utms = Object.fromEntries(urlParams.entries());
-    Object.keys(utms).forEach((key) => {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.setAttribute("hidden", "hidden");
-      input.name = key;
-      input.value = utms[key];
-      form.appendChild(input);
-    });
-
-    formData.append("phone_number", phoneField.value.replace(/\D/g, ''));
-    formData.append("email", emailField.value);
+    formData.set("phone_number", phoneField.value.replace(/\D/g, ''))
     formData.append("$fields", ["Accepts-Marketing", "sms_consent", ...Object.keys(utms)]);
     formData.append("Accepts-Marketing", true);
     formData.append("sms_consent", true);

@@ -124,14 +124,22 @@ const handleForm = ({ campaignPhoneNumber, apiKey, submitBtnId, formId, submitFu
     };
     const formData = new FormData();
     const urlParams = new URLSearchParams(window.location.search);
-    const utms = ["utm_medium", "utm_content", "gclid", "fbclid"]
+
+    const utms = Object.fromEntries(urlParams.entries());
+    Object.keys(utms).forEach((key) => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.setAttribute("hidden", "hidden");
+      input.name = key;
+      input.value = utms[key];
+      form.appendChild(input);
+    });
+
     formData.append("phone_number", phoneField.value.replace(/\D/g, ''));
     formData.append("email", emailField.value);
-    formData.append("$fields", ["Accepts-Marketing", ...utms]);
+    formData.append("$fields", ["Accepts-Marketing", "sms_consent", ...Object.keys(utms)]);
     formData.append("Accepts-Marketing", true);
-    utms.forEach((urlParam) => {
-      formData.append(urlParam, urlParams.get(urlParam));
-    });
+    formData.append("sms_consent", true);
 
     try {
       await Promise.all([postAisle(body),postKlaviyo(formData)]);

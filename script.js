@@ -1,4 +1,4 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "" }, submitFunction = () => {} }) => {
+const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "", customFields: [] }, submitFunction = () => {} }) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -169,6 +169,13 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     if (hasPhoneNumber) body.phone = iti.getNumber() || "";
     body.full_name = form.querySelector("[name='first_name']").value;
     body.email = form.querySelector("[name='email']").value;
+    body.organization = form.querySelector("[name='company']")?.value || "";
+    body.country = form.querySelector("[name='country']")?.value || "";
+    ghl.customFields?.forEach(fieldPair=>{
+      fieldName = fieldPair[0]
+      fieldId = fieldPair[1];
+      body[fieldId] = form.querySelector(`[name='${fieldName}']`).value;
+    })
     body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
     body.formId = ghl.formId;
     body.location_id = ghl.location_id;

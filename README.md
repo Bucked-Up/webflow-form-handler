@@ -21,6 +21,7 @@
     ghl: { //optional
       formId: "",
       location_id: "",
+      customFields: [["message","testId"],]
     },
     klaviyo: { //optional
       klaviyoA: "",

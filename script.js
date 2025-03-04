@@ -147,7 +147,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       const field = document.getElementById(checkFieldId);
       formData.set(checkFieldId, field.checked ? true : false);
     });
-    klaviyo.forceChecksTrue.forEach((checkFieldId) => {
+    ["accepts-marketing", "sms_consent", ...klaviyo.forceChecksTrue].forEach((checkFieldId) => {
       formData.set(checkFieldId, true);
     });
 
@@ -171,6 +171,8 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     body.email = form.querySelector("[name='email']").value;
     body.organization = form.querySelector("[name='company']")?.value || "";
     body.country = form.querySelector("[name='country']")?.value || "";
+    if(body.country.trim() !== "")
+      body.state = form.querySelector("[name='state']")?.value || "";
     ghl.customFields?.forEach(fieldPair=>{
       fieldName = fieldPair[0]
       fieldId = fieldPair[1];

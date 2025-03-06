@@ -21,6 +21,8 @@
     ghl: { //optional
       formId: "",
       location_id: "",
+      captchaToken: "",
+      fields: ["full_name","email","phone"]
       customFields: [["message","testId"],]
     },
     klaviyo: { //optional

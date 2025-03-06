@@ -1,4 +1,4 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "", customFields: [] }, submitFunction = () => {} }) => {
+const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "", captchaToken: "", fields: [], customFields: [] }, submitFunction = () => {} }) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -31,6 +31,14 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   const submitBtn = document.getElementById(submitBtnId);
   const form = document.getElementById(formId);
   const urlParams = new URLSearchParams(window.location.search);
+  if (ghl.formId) {
+    const captchaScript = document.createElement("script");
+    captchaScript.src = `https://www.google.com/recaptcha/enterprise.js?render=${ghl.captchaToken}`;
+    captchaScript.async = true;
+    captchaScript.type = "text/javascript";
+
+    document.head.append(captchaScript);
+  }
 
   if (hasPhoneNumber) {
     phoneField = form.querySelector("[name='phone_number']");
@@ -138,11 +146,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       phoneField.value.trim === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
       phoneField.value = iti.getNumber();
     }
-    klaviyo.customTextFields = klaviyo.customTextFields || [],
-    klaviyo.customCheckFields = klaviyo.customCheckFields || [],
-    klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || [],
-
-    formData.append("$fields", [...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
+    (klaviyo.customTextFields = klaviyo.customTextFields || []), (klaviyo.customCheckFields = klaviyo.customCheckFields || []), (klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || []), formData.append("$fields", [...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
     klaviyo.customCheckFields.forEach((checkFieldId) => {
       const field = document.getElementById(checkFieldId);
       formData.set(checkFieldId, field.checked ? true : false);
@@ -167,17 +171,17 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     const formData = new FormData();
 
     if (hasPhoneNumber) body.phone = iti.getNumber() || "";
-    body.full_name = form.querySelector("[name='first_name']").value;
-    body.email = form.querySelector("[name='email']").value;
-    body.organization = form.querySelector("[name='company']")?.value || "";
-    body.country = form.querySelector("[name='country']")?.value || "";
-    if(body.country.trim() !== "")
-      body.state = form.querySelector("[name='state']")?.value || "";
-    ghl.customFields?.forEach(fieldPair=>{
-      fieldName = fieldPair[0]
+    if (ghl.fields.includes("full_name")) body.full_name = form.querySelector("[name='first_name']").value;
+    if (ghl.fields.includes("first_name")) body.first_name = form.querySelector("[name='first_name']").value;
+    if (ghl.fields.includes("email")) body.email = form.querySelector("[name='email']").value;
+    if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
+    if (ghl.fields.includes("country")) body.country = form.querySelector("[name='country']")?.value || "";
+    if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";
+    ghl.customFields?.forEach((fieldPair) => {
+      fieldName = fieldPair[0];
       fieldId = fieldPair[1];
       body[fieldId] = form.querySelector(`[name='${fieldName}']`).value;
-    })
+    });
     body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
     body.formId = ghl.formId;
     body.location_id = ghl.location_id;
@@ -185,6 +189,15 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     body.eventData.url_params = Object.fromEntries(urlParams.entries());
     body.eventData.campaign = urlParams.get("utm_campaign");
     formData.append("formData", JSON.stringify(body));
+    formData.append("locationId", ghl.location_id);
+    formData.append("formId", ghl.formId);
+
+    try{
+      const token = await grecaptcha.enterprise.execute(ghl.captchaToken, { action: "submit" });
+      formData.append("captchaV3", token);
+    }catch{
+      return Promise.reject("GHL response was not ok");
+    }
 
     const response = await fetch("https://backend.leadconnectorhq.com/forms/submit", {
       method: "POST",

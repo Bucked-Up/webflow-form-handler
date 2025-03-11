@@ -25,6 +25,7 @@
       fields: ["full_name","email","phone"]
       customFields: [["message","testId"],]
     },
+    hubspot: { endpoint: "" },
     klaviyo: { //optional
       klaviyoA: "",
       klaviyoG: "",

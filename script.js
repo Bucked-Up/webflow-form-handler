@@ -1,4 +1,4 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "", captchaToken: "", fields: [], customFields: [] }, submitFunction = () => {} }) => {
+const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "", captchaToken: "", fields: [], customFields: [] }, hubspot = { endpoint: "" }, submitFunction = () => {} }) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -192,10 +192,10 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     formData.append("locationId", ghl.location_id);
     formData.append("formId", ghl.formId);
 
-    try{
+    try {
       const token = await grecaptcha.enterprise.execute(ghl.captchaToken, { action: "submit" });
       formData.append("captchaV3", token);
-    }catch{
+    } catch {
       return Promise.reject("GHL response was not ok");
     }
 
@@ -209,16 +209,35 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     }
   };
 
+  const handleHubspot = async () => {
+    const body = { properties: {} };
+    body.properties.email = form.querySelector("[name='email']")?.value;
+    body.properties.firstname = form.querySelector("[name='first_name']")?.value;
+    body.properties.phone = form.querySelector("[name='phone_number']")?.value;
+
+    const response = await fetch(hubspot.endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      return Promise.reject("Hubspot response was not ok");
+    }
+  };
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
-      if (klaviyo.klaviyoA && ghl.formId) {
-        await Promise.all([handleKlaviyo(e), handleGHL()]);
-      } else if (klaviyo.klaviyoA) {
-        await handleKlaviyo(e);
-      } else if (ghl.formId) {
-        await handleGHL();
-      }
+      const tasks = [];
+      if (klaviyo.klaviyoA) tasks.push(handleKlaviyo(e));
+      if (ghl.formId) tasks.push(handleGHL());
+      if (hubspot.endpoint) tasks.push(handleHubspot());
+
+      if (tasks.length) await Promise.all(tasks);
+
       if (formDone.style.display === "block") submitFunction();
       else initObserver();
     } catch (e) {

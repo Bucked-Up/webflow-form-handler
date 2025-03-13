@@ -1,4 +1,4 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: [], customCheckFields: [], forceChecksTrue: [], klaviyoA: "", klaviyoG: "" }, ghl = { formId: "", location_id: "", captchaToken: "", fields: [], customFields: [] }, hubspot = { endpoint: "" }, submitFunction = () => {} }) => {
+const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined }, ghl = { formId: undefined, location_id: undefined, captchaToken: undefined, fields: undefined, customFields: undefined }, hubspot = { endpoint: undefined }, custom = { customFunc: undefined, hasCaptcha: undefined }, submitFunction = () => {} }) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -31,9 +31,9 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   const submitBtn = document.getElementById(submitBtnId);
   const form = document.getElementById(formId);
   const urlParams = new URLSearchParams(window.location.search);
-  if (ghl.formId) {
+  if (ghl.formId || custom.hasCaptcha) {
     const captchaScript = document.createElement("script");
-    captchaScript.src = `https://www.google.com/recaptcha/enterprise.js?render=${ghl.captchaToken}`;
+    captchaScript.src = custom.hasCaptcha || `https://www.google.com/recaptcha/enterprise.js?render=${ghl.captchaToken}`;
     captchaScript.async = true;
     captchaScript.type = "text/javascript";
 
@@ -210,6 +210,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   };
 
   const handleHubspot = async () => {
+    console.log("got in hubspot");
     const body = { properties: {} };
     body.properties.email = form.querySelector("[name='email']")?.value;
     body.properties.firstname = form.querySelector("[name='first_name']")?.value;
@@ -228,6 +229,13 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     }
   };
 
+  const handleCustom = async () => {
+    const response = await custom.customFunc();
+    if (!response.ok) {
+      return Promise.reject("Custom function response was not ok");
+    }
+  };
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
@@ -235,6 +243,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       if (klaviyo.klaviyoA) tasks.push(handleKlaviyo(e));
       if (ghl.formId) tasks.push(handleGHL());
       if (hubspot.endpoint) tasks.push(handleHubspot());
+      if (custom.customFunc) tasks.push(handleCustom());
 
       if (tasks.length) await Promise.all(tasks);
 

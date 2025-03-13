@@ -33,6 +33,10 @@
       customCheckFields: [], //optional
       forceChecksTrue: [], //optional
     },
+    custom: { //cant be used along with ghl yet.
+      customFunc: ()=>{},
+      hasCaptcha: "",
+    },
     submitFunction: ()=>{}
   })
 </script>

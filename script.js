@@ -210,11 +210,11 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   };
 
   const handleHubspot = async () => {
-    console.log("got in hubspot");
     const body = { properties: {} };
     body.properties.email = form.querySelector("[name='email']")?.value;
     body.properties.firstname = form.querySelector("[name='first_name']")?.value;
     body.properties.phone = form.querySelector("[name='phone_number']")?.value;
+    body.properties.message = form.querySelector("[name='message']")?.value;
 
     const response = await fetch(hubspot.endpoint, {
       method: "POST",

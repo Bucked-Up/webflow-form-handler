@@ -215,6 +215,9 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     body.properties.firstname = form.querySelector("[name='first_name']")?.value;
     body.properties.phone = form.querySelector("[name='phone_number']")?.value;
     body.properties.message = form.querySelector("[name='message']")?.value;
+    body.properties.fbclid = urlParams.get("fbclid");
+    body.properties.gclid = urlParams.get("gclid");
+    body.properties.urlParams = `${urlParams}`;
 
     const response = await fetch(hubspot.endpoint, {
       method: "POST",

@@ -175,10 +175,10 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     if (ghl.fields.includes("first_name")) body.first_name = form.querySelector("[name='first_name']").value;
     if (ghl.fields.includes("last_name")) body.last_name = form.querySelector("[name='last_name']").value;
     if (ghl.fields.includes("email")) body.email = form.querySelector("[name='email']").value;
-    if (ghl.fields.includes("address")) body.email = form.querySelector("[name='address']").value;
-    if (ghl.fields.includes("city")) body.email = form.querySelector("[name='city']").value;
-    if (ghl.fields.includes("state")) body.email = form.querySelector("[name='state']").value;
-    if (ghl.fields.includes("postal_code")) body.email = form.querySelector("[name='postal_code']").value;
+    if (ghl.fields.includes("address")) body.address = form.querySelector("[name='address']")?.value || "";
+    if (ghl.fields.includes("city")) body.city = form.querySelector("[name='city']")?.value || "";
+    if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";
+    if (ghl.fields.includes("postal_code")) body.postal_code = form.querySelector("[name='postal_code']")?.value || "";
     if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
     if (ghl.fields.includes("country")) body.country = form.querySelector("[name='country']")?.value || "";
     if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";

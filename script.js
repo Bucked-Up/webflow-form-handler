@@ -185,7 +185,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     ghl.customFields?.forEach((fieldPair) => {
       fieldName = fieldPair[0];
       fieldId = fieldPair[1];
-      body[fieldId] = form.querySelector(`[name='${fieldName}']`).value;
+      body[fieldId] = form.querySelector(`[name='${fieldName}']`)?.value || "";
     });
     body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
     body.formId = ghl.formId;

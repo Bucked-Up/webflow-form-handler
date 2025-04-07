@@ -193,6 +193,9 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     body.eventData = {};
     body.eventData.url_params = Object.fromEntries(urlParams.entries());
     body.eventData.campaign = urlParams.get("utm_campaign");
+    body.eventData.page = {};
+    body.eventData.page.url = window.location.href;
+    body.eventData.page.title = document.title;
     formData.append("formData", JSON.stringify(body));
     formData.append("locationId", ghl.location_id);
     formData.append("formId", ghl.formId);

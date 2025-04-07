@@ -173,6 +173,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     if (hasPhoneNumber) body.phone = iti.getNumber() || "";
     if (ghl.fields.includes("full_name")) body.full_name = form.querySelector("[name='first_name']").value;
     if (ghl.fields.includes("first_name")) body.first_name = form.querySelector("[name='first_name']").value;
+    if (ghl.fields.includes("last_name")) body.last_name = form.querySelector("[name='last_name']").value;
     if (ghl.fields.includes("email")) body.email = form.querySelector("[name='email']").value;
     if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
     if (ghl.fields.includes("country")) body.country = form.querySelector("[name='country']")?.value || "";
@@ -213,7 +214,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     const body = { properties: {} };
     body.properties.email = form.querySelector("[name='email']")?.value;
     body.properties.firstname = form.querySelector("[name='first_name']")?.value;
-    body.properties.phone = form.querySelector("[name='phone_number']")?.value;
+    if (hasPhoneNumber) body.properties.phone = iti.getNumber() || "";
     body.properties.message = form.querySelector("[name='message']")?.value;
     body.properties.fbclid = urlParams.get("fbclid");
     body.properties.gclid = urlParams.get("gclid");

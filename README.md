@@ -25,7 +25,7 @@
       fields: ["full_name","email","phone"]
       customFields: [["message","testId"],]
     },
-    hubspot: { endpoint: "" },
+    hubspot: { endpoint: "" }, //optional
     klaviyo: { //optional
       klaviyoA: "",
       klaviyoG: "",
@@ -33,7 +33,7 @@
       customCheckFields: [], //optional
       forceChecksTrue: [], //optional
     },
-    custom: { //cant be used along with ghl yet.
+    custom: { //cant be used along with ghl yet. optional.
       customFunc: ()=>{},
       hasCaptcha: "",
     },

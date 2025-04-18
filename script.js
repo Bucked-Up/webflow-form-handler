@@ -37,6 +37,11 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     captchaScript.async = true;
     captchaScript.type = "text/javascript";
 
+    const style = document.createElement("style");
+    style.textContent = `
+      .grecaptcha-badge{width:0 !important;height: 0!important}
+    `;
+    document.head.appendChild(style);
     document.head.append(captchaScript);
   }
 

@@ -151,7 +151,10 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       phoneField.value.trim === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
       phoneField.value = iti.getNumber();
     }
-    (klaviyo.customTextFields = klaviyo.customTextFields || []), (klaviyo.customCheckFields = klaviyo.customCheckFields || []), (klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || []), formData.append("$fields", [...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
+    klaviyo.customTextFields = klaviyo.customTextFields || [];
+    klaviyo.customCheckFields = klaviyo.customCheckFields || [];
+    klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || [];
+    formData.append("$fields", ["accepts-marketing", "sms_consent", ...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
     klaviyo.customCheckFields.forEach((checkFieldId) => {
       const field = document.getElementById(checkFieldId);
       formData.set(checkFieldId, field.checked ? true : false);

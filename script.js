@@ -184,12 +184,11 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     if (ghl.fields.includes("last_name")) body.last_name = form.querySelector("[name='last_name']").value;
     if (ghl.fields.includes("email")) body.email = form.querySelector("[name='email']").value;
     if (ghl.fields.includes("address")) body.address = form.querySelector("[name='address']")?.value || "";
+    if (ghl.fields.includes("country")) body.country = form.querySelector("[name='country']")?.value || "";
     if (ghl.fields.includes("city")) body.city = form.querySelector("[name='city']")?.value || "";
     if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";
     if (ghl.fields.includes("postal_code")) body.postal_code = form.querySelector("[name='postal_code']")?.value || "";
     if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
-    if (ghl.fields.includes("country")) body.country = form.querySelector("[name='country']")?.value || "";
-    if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";
     ghl.customFields?.forEach((fieldPair) => {
       fieldName = fieldPair[0];
       fieldId = fieldPair[1];
@@ -200,7 +199,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     body.location_id = ghl.location_id;
     body.eventData = {};
     body.eventData.url_params = Object.fromEntries(urlParams.entries());
-    body.eventData.campaign = urlParams.get("utm_campaign");
+    body.eventData.campaign = urlParams.get("utm_campaign") || urlParams.get("gad_campaignid");
     body.eventData.page = {};
     body.eventData.page.url = window.location.href;
     body.eventData.page.title = document.title;

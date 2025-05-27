@@ -171,7 +171,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     };
 
     const handlePhoneNumber = () => {
-      if (hasPhoneNumber) {
+      if (hasPhoneNumber && iti.getNumber().trim() !== "") {
         phoneField.value = iti.getNumber();
         return { phone_number: iti.getNumber() };
       }

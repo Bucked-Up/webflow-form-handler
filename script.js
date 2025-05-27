@@ -170,7 +170,14 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       return {};
     };
 
-    if (hasPhoneNumber) phoneField.value = iti.getNumber();
+    const handlePhoneNumber = () => {
+      if (hasPhoneNumber) {
+        phoneField.value = iti.getNumber();
+        return { phone_number: iti.getNumber() };
+      }
+      return {};
+    };
+
     const response = await fetch(`https://a.klaviyo.com/client/subscriptions?company_id=${klaviyo.klaviyoA}`, {
       method: "POST",
       headers: {
@@ -200,7 +207,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
                   },
                   email: document.querySelector("[name='email']")?.value,
                   first_name: document.querySelector("[name='first_name']")?.value,
-                  phone_number: iti?.getNumber() || "",
+                  ...handlePhoneNumber(),
                 },
               },
             },
@@ -216,7 +223,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
         },
       }),
     });
-    if(response.status === 202) return;
+    if (response.status === 202) return;
     if (!response.ok) {
       Promise.reject("Klaviyo Network response was not ok: " + response.statusText);
     }

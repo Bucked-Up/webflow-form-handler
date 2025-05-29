@@ -1,4 +1,14 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { hasPhoneNumberVerification: undefined, customTextFields: undefined, customCheckFields: undefined, klaviyoA: undefined, klaviyoG: undefined }, ghl = { formId: undefined, location_id: undefined, captchaToken: undefined, fields: undefined, customFields: undefined }, hubspot = { endpoint: undefined }, custom = { customFunc: undefined, hasCaptcha: undefined }, submitFunction = () => {} }) => {
+const handleForm = ({
+  formId,
+  submitBtnId,
+  hasPhoneNumber,
+  phoneNumberIsRequired,
+  klaviyo = { hasPhoneNumberVerification: undefined, customTextFields: undefined, customCheckFields: undefined, klaviyoA: undefined, klaviyoG: undefined },
+  ghl = { formId: undefined, location_id: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined },
+  hubspot = { endpoint: undefined },
+  custom = { customFunc: undefined, hasCaptcha: undefined },
+  submitFunction = () => {},
+}) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -234,6 +244,15 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   const handleGHL = async () => {
     const body = {};
     const formData = new FormData();
+
+    if (ghl.hasMida) {
+      try{
+        const midaUuid = await mida.uuid();
+        body[ghl.hasMida] = midaUuid;
+      }catch(e){
+        console.error(e)
+      }
+    }
 
     if (hasPhoneNumber) body.phone = iti.getNumber() || "";
     if (ghl.fields.includes("full_name")) body.full_name = form.querySelector("[name='first_name']").value;

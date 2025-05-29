@@ -22,6 +22,7 @@
       formId: "",
       location_id: "",
       captchaToken: "",
+      hasMida: false, //value would be the field id for the uuid
       fields: ["full_name","email","phone"]
       customFields: [["message","testId"],]
     },

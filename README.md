@@ -30,9 +30,9 @@
     klaviyo: { //optional
       klaviyoA: "",
       klaviyoG: "",
-      hasPhoneNumberVerification: false, //optional
       customTextFields: [], //optional
       customCheckFields: [], //optional
+      forceChecksTrue: [], //optional
     },
     custom: { //cant be used along with ghl yet. optional.
       customFunc: ()=>{},

@@ -120,9 +120,9 @@ const handleForm = ({
     });
   }
 
-  const handleError = () => {
+  const handleError = (message) => {
     const p = form.parentElement.querySelector(".w-form-done div");
-    if (p) p.innerHTML = "Oops! Something went wrong while submitting the form.";
+    if (p) p.innerHTML = message || "Oops! Something went wrong while submitting the form.";
   };
 
   const formDone = form.parentElement.querySelector(".w-form-done");
@@ -238,7 +238,11 @@ const handleForm = ({
       Promise.reject("Klaviyo Network response was not ok: " + response.statusText);
     }
     const data = await response.json();
-    if (data.errors) return Promise.reject(`Error sending to klaviyo: ${JSON.stringify(data.errors)}`);
+
+    if (data.errors){
+      handleError(data.errors?.detail)
+      return Promise.reject(`Error sending to klaviyo: ${JSON.stringify(data.errors)}`);
+    }
   };
 
   const handleGHL = async () => {
@@ -345,7 +349,7 @@ const handleForm = ({
       else initObserver();
     } catch (e) {
       trySentry({ error: JSON.stringify(e) });
-      handleError();
+      // handleError();
       console.error(e);
     }
   });

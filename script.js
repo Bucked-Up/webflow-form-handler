@@ -238,7 +238,7 @@ const handleForm = ({
       Promise.reject("Klaviyo Network response was not ok: " + response.statusText);
     }
     const data = await response.json();
-    if (data.errors) return Promise.reject(`Error sending to klaviyo: ${data.errors}`);
+    if (data.errors) return Promise.reject(`Error sending to klaviyo: ${JSON.stringify(data.errors)}`);
   };
 
   const handleGHL = async () => {
@@ -344,9 +344,9 @@ const handleForm = ({
       if (formDone.style.display === "block") submitFunction();
       else initObserver();
     } catch (e) {
-      trySentry({ error: `${e}` });
+      trySentry({ error: JSON.stringify(e) });
       handleError();
-      console.error(`${e}`);
+      console.error(e);
     }
   });
 };

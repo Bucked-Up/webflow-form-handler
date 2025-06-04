@@ -270,7 +270,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     e.preventDefault();
     try {
       const tasks = [];
-      if (klaviyo.klaviyoA) tasks.push(handleKlaviyo());
+      if (klaviyo.klaviyoA) tasks.push(handleKlaviyo(e));
       if (ghl.formId) tasks.push(handleGHL());
       if (hubspot.endpoint) tasks.push(handleHubspot());
       if (custom.customFunc) tasks.push(handleCustom());

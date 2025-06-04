@@ -154,10 +154,10 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     klaviyo.customTextFields = klaviyo.customTextFields || [];
     klaviyo.customCheckFields = klaviyo.customCheckFields || [];
     klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || [];
+    formData.append("$fields", ["accepts-marketing", "sms_consent", ...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
     if (hasPhoneNumber && iti.getNumber().trim !== "" && !document.querySelector("[name='sms_consent']")) {
       klaviyo.forceChecksTrue.push("sms_consent");
     }
-    formData.append("$fields", ["accepts-marketing", "sms_consent", ...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
     klaviyo.customCheckFields.forEach((checkFieldId) => {
       const field = document.getElementById(checkFieldId);
       formData.set(checkFieldId, field.checked ? true : false);

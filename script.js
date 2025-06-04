@@ -154,8 +154,8 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     klaviyo.customTextFields = klaviyo.customTextFields || [];
     klaviyo.customCheckFields = klaviyo.customCheckFields || [];
     klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || [];
-    if (hasPhoneNumber && iti.getNumber().trim !== "" && !document.querySelector("[name='sms_consent']")) {
-      klaviyo.forceChecksTrue.push("sms_consent");
+    if (hasPhoneNumber && iti.getNumber().trim !== "" && !document.querySelector("[name='sms-consent']")) {
+      klaviyo.forceChecksTrue.push("sms-consent");
     }
     formData.append("$fields", ["accepts-marketing", ...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
     klaviyo.customCheckFields.forEach((checkFieldId) => {

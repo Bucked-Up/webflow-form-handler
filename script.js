@@ -187,6 +187,12 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
         body[ghl.hasMida] = midaUuid;
       } catch (e) {
         console.error(e);
+        try {
+          const midaUuid = mida.uuid;
+          body[ghl.hasMida] = midaUuid;
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
 

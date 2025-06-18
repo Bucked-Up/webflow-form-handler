@@ -1,4 +1,4 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined }, ghl = { formId: undefined, location_id: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined }, hubspot = { endpoint: undefined }, custom = { customFunc: undefined, hasCaptcha: undefined }, submitFunction = () => {} }) => {
+const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, phoneNumberIsExternal, klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined }, ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined }, hubspot = { endpoint: undefined }, custom = { customFunc: undefined, hasCaptcha: undefined }, submitFunction = () => {} }) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -45,7 +45,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     document.head.append(captchaScript);
   }
 
-  if (hasPhoneNumber) {
+  if (hasPhoneNumber && !phoneNumberIsExternal) {
     phoneField = form.querySelector("[name='phone_number']");
     const disableSubmitBtn = () => {
       submitBtn.setAttribute("disabled", "disabled");
@@ -196,7 +196,10 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       }
     }
 
-    if (hasPhoneNumber) body.phone = iti.getNumber() || "";
+    if (hasPhoneNumber){
+      if(phoneNumberIsExternal) body.phone = form.querySelector("[name='phone_number']").value;
+      else body.phone = iti.getNumber() || "";
+    }
     if (ghl.fields.includes("full_name")) body.full_name = form.querySelector("[name='first_name']").value;
     if (ghl.fields.includes("first_name")) body.first_name = form.querySelector("[name='first_name']").value;
     if (ghl.fields.includes("last_name")) body.last_name = form.querySelector("[name='last_name']").value;
@@ -231,8 +234,8 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     } catch {
       return Promise.reject("GHL response was not ok");
     }
-
-    const response = await fetch("https://backend.leadconnectorhq.com/forms/submit", {
+    const endpoint = ghl.isSurvey ? "https://backend.leadconnectorhq.com/surveys/submit" : "https://backend.leadconnectorhq.com/forms/submit"
+    const response = await fetch(endpoint, {
       method: "POST",
       body: formData,
     });

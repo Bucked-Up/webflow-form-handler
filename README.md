@@ -18,9 +18,11 @@
     submitBtnId: "",
     hasPhoneNumber: false,
     phoneNumberIsRequired: false,
+    phoneNumberIsExternal: false,
     ghl: { //optional
       formId: "",
       location_id: "",
+      isSurvey: false,
       captchaToken: "",
       hasMida: false, //value would be the field id for the uuid
       fields: ["full_name","email","phone"]

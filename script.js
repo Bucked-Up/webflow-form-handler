@@ -1,4 +1,15 @@
-const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired, phoneNumberIsExternal, klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined }, ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined }, hubspot = { endpoint: undefined }, custom = { customFunc: undefined, hasCaptcha: undefined }, submitFunction = () => {} }) => {
+const handleForm = ({
+  formId,
+  submitBtnId,
+  hasPhoneNumber,
+  phoneNumberIsRequired,
+  phoneNumberIsExternal,
+  klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined },
+  ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined },
+  hubspot = { endpoint: undefined },
+  custom = { customFunc: undefined, hasCaptcha: undefined },
+  submitFunction = () => {},
+}) => {
   const trySentry = ({ error, message }) => {
     try {
       if (error) {
@@ -31,6 +42,291 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   const submitBtn = document.getElementById(submitBtnId);
   const form = document.getElementById(formId);
   const urlParams = new URLSearchParams(window.location.search);
+  const disableSubmitBtn = () => {
+    submitBtn.setAttribute("disabled", "disabled");
+    submitBtn.style.filter = "contrast(0.5)";
+    submitBtn.style.cursor = "not-allowed";
+  };
+  disableSubmitBtn();
+  const emailInvalid = () => {
+    const email = form.querySelector("[name='email']").value;
+    const tldTypos = [
+      // Primary TLD typo variations
+      ".con",
+      ".cmo",
+      ".cim",
+      ".vom",
+      ".xom",
+      ".coom",
+      ".comn",
+      ".comm",
+      ".com.",
+      ".cok",
+      ".col",
+      ".cop",
+      ".cpom",
+      ".com,",
+      ".com/",
+      ".com\\",
+      ".c0m",
+      ".cocm",
+      ".com-",
+      ".com;",
+      ".coim",
+      ".com`",
+      ".c.om",
+      ".com/",
+
+      // Shortened or incomplete TLDs
+      ".cm",
+      ".cpm",
+      ".cn",
+      ".cim",
+      ".co",
+      ".cim",
+      ".cok",
+      ".c9m",
+
+      // Other TLD errors
+      ".net",
+      ".netw",
+      ".net.",
+      ".ne",
+      ".nte",
+      ".nett",
+      ".net,",
+      ".net/",
+      ".net\\",
+      ".org",
+      ".orgg",
+      ".ogr",
+      ".org.",
+      ".org,",
+      ".org/",
+      ".org\\",
+
+      // Education TLDs
+      ".ed",
+      ".edu",
+      ".edu.",
+      ".ed.",
+      ".edu,",
+      ".edu/",
+      ".edu\\",
+
+      // Country code typos
+      ".cm",
+      ".om",
+      ".cim",
+      ".coim",
+      ".coim.",
+      ".coim,",
+      ".coim/",
+      ".coim\\",
+
+      // Swap/adjacent key errors
+      ".dom",
+      ".fom",
+      ".xom",
+      ".vcom",
+      ".bom",
+      ".hom",
+      ".ncom",
+      ".moc",
+      ".mcom",
+      ".comc",
+      ".cokn",
+      ".vomm",
+      ".copm",
+      ".cma",
+      ".ckm",
+      ".colm",
+      ".como",
+
+      // Repeated/mistyped chars
+      ".coom",
+      ".coom.",
+      ".coom,",
+      ".coom/",
+      ".coom\\",
+      ".co.,",
+      ".co./",
+      ".co.\\",
+      ".comm",
+      ".comm.",
+      ".comm,",
+      ".comm/",
+      ".comm\\",
+
+      // Common domain typos (major email providers)
+      ".gamil.com",
+      ".gmaill.com",
+      ".gnail.com",
+      ".gmail.con",
+      ".gmail,com",
+      ".gmail.",
+      ".gmail,",
+      ".gmail\\",
+      ".gmail/",
+      ".gmail.co",
+      ".gmail.cmo",
+      ".gmai.com",
+      ".gmail.ccm",
+      ".gmail.cm",
+      ".gmail.om",
+      ".gmail.xom",
+      ".gmal.com",
+      ".gmial.com",
+      ".g-mail.com",
+      ".gmil.com",
+      ".ygmail.com",
+
+      ".hotmail.com",
+      ".hotmial.com",
+      ".hotmal.com",
+      ".hotmaill.com",
+      ".htomail.com",
+      ".hotmial.co",
+      ".hotmal.co",
+      ".hotmail.con",
+      ".hotmail,com",
+      ".hotmail.",
+      ".hotmail,",
+      ".hotmail\\",
+      ".hotmail/",
+      ".hotmail.co",
+      ".hotmail.cmo",
+      ".hotmai.com",
+
+      ".outlook.com",
+      ".outlok.com",
+      ".outllok.com",
+      ".outlok.co",
+      ".outllook.com",
+      ".outllok.com",
+      ".outlook.con",
+      ".outlook,com",
+      ".outlook.",
+      ".outlook,",
+      ".outlook\\",
+      ".outlook/",
+
+      ".yahoo.com",
+      ".yahho.com",
+      ".yaoo.com",
+      ".yhoo.com",
+      ".yaho.com",
+      ".yahao.com",
+      ".yahoo.co",
+      ".yahho.co",
+      ".yahoo.con",
+      ".yahoo,com",
+      ".yahoo.",
+      ".yahoo,",
+      ".yahoo\\",
+      ".yahoo/",
+
+      ".icloud.com",
+      ".icloud.co.",
+      ".icloud.con",
+      ".icloud,com",
+      ".iclod.com",
+      ".icoud.com",
+      ".ilcoud.com",
+      ".icloid.com",
+      ".icould.com",
+      ".icloud.cm",
+      ".icloud.om",
+      ".icloud,com",
+      ".icloud.",
+      ".icloud,",
+      ".icloud\\",
+
+      ".msn.com",
+      ".msn.con",
+      ".msn.cm",
+      ".msn,com",
+      ".msn.",
+      ".msn,",
+      ".msn\\",
+      ".msn/",
+
+      ".live.com",
+      ".live.con",
+      ".live.cm",
+      ".live,com",
+      ".live.",
+      ".live,",
+      ".live\\",
+      ".live/",
+
+      ".aol.com",
+      ".aol.con",
+      ".aol.cm",
+      ".aol,com",
+      ".aol.",
+      ".aol,",
+      ".aol\\",
+      ".aol/",
+
+      ".protonmail.com",
+      ".protonnmail.com",
+      ".prontonmail.com",
+      ".protonmail.con",
+      ".protonmail.cm",
+      ".protonmail,com",
+      ".protonmail.",
+      ".protonmail,",
+      ".protonmail\\",
+      ".protonmail/",
+      ".protonmail.co",
+
+      ".pmail.com",
+      ".pmail.con",
+      ".pmail.cm",
+      ".pmail,com",
+      ".pmail.",
+      ".pmail,",
+      ".pmail\\",
+      ".pmail/",
+
+      ".gogle.com",
+      ".gooogle.com",
+      ".goggle.com",
+      ".goole.com",
+      ".googel.com",
+      ".gogl.com",
+      ".gogole.com",
+
+      // Obvious keyboard errors or transposed letters
+      ".cok",
+      ".c0m",
+      ".c9m",
+      ".cpm",
+      ".c0n",
+      ".c,com",
+      ".clom",
+      ".ckom",
+
+      // Slash/dot confusion and final chars
+      ".com/",
+      ".com\\",
+      ".com.",
+      ".com,",
+      ".com;",
+      ".com-",
+      ".com_",
+      ".com!",
+      ".com?",
+      ".com]",
+      ".com[",
+      ".com}",
+      ".com{",
+    ];
+    return !/^(?!.*\.\.)([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,24}$/.test(email) || tldTypos.some((t) => email.toLowerCase().endsWith(t));
+  };
+  const emailField = form.querySelector("[name='email']");
+
   if (ghl.formId || custom.hasCaptcha) {
     const captchaScript = document.createElement("script");
     captchaScript.src = custom.hasCaptcha || `https://www.google.com/recaptcha/enterprise.js?render=${ghl.captchaToken}`;
@@ -45,22 +341,26 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     document.head.append(captchaScript);
   }
 
+  const handleEmailFocusOut = () => {
+    if (emailInvalid()) {
+      emailField.style.borderColor = "red";
+      emailField.style.outline = "1px solid red";
+      disableSubmitBtn();
+    } else {
+      emailField.style.borderColor = "";
+      emailField.style.outline = "";
+    }
+  };
+
+  const handleEnterKey = (alertMessage) => (e) => {
+    if (e.key === "Enter" && submitBtn.hasAttribute("disabled")) {
+      alert(alertMessage);
+    }
+  };
+
   if (hasPhoneNumber && !phoneNumberIsExternal) {
     phoneField = form.querySelector("[name='phone_number']");
-    const disableSubmitBtn = () => {
-      submitBtn.setAttribute("disabled", "disabled");
-      submitBtn.style.filter = "contrast(0.5)";
-      submitBtn.style.cursor = "not-allowed";
-    };
-
-    let phoneNumberIsNotValid;
-    if (phoneNumberIsRequired) {
-      disableSubmitBtn();
-      phoneNumberIsNotValid = () => !iti.isValidNumber();
-    } else {
-      phoneNumberIsNotValid = () => phoneField.value.trim() !== "" && !iti.isValidNumber();
-    }
-
+    const phoneNumberIsNotValid = phoneNumberIsRequired ? () => !iti.isValidNumber() : () => phoneField.value.trim() !== "" && !iti.isValidNumber();
     iti = window.intlTelInput(phoneField, {
       utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.3.2/build/js/utils.js",
       autoPlaceholder: "aggressive",
@@ -77,37 +377,54 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
           if (response.ok) {
             document.cookie = `user_country=${data.country};${cookieConfig}`;
             success(data.country);
-          } else throw new error("Error Fetching Ip", response, data);
+          } else throw new Error("Error Fetching Ip", response, data);
         } catch (e) {
           console.warn(e);
           failure();
         }
       },
     });
-    phoneField.addEventListener("input", () => {
-      if (phoneNumberIsNotValid()) {
+
+    const handleValidation = () => {
+      if (phoneNumberIsNotValid() || emailInvalid()) {
         submitBtn.setAttribute("disabled", "disabled");
       } else {
         submitBtn.removeAttribute("disabled");
         phoneField.style = "";
         submitBtn.style = "";
       }
-    });
-    phoneField.addEventListener("focusout", () => {
+    };
+
+    const handlePhoneFocusOut = () => {
       if (phoneNumberIsNotValid()) {
         phoneField.style.borderColor = "red";
         phoneField.style.outline = "1px solid red";
         disableSubmitBtn();
+      } else {
+        phoneField.style.borderColor = "";
+        phoneField.style.outline = "";
       }
-    });
-    const invalidPhoneField = () => {
-      alert("Phone field invalid. Please check if every number is present.");
     };
-    form.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && submitBtn.hasAttribute("disabled")) {
-        invalidPhoneField();
+
+    phoneField.addEventListener("input", handleValidation);
+    emailField.addEventListener("input", handleValidation);
+    phoneField.addEventListener("focusout", handlePhoneFocusOut);
+    emailField.addEventListener("focusout", handleEmailFocusOut);
+    form.addEventListener("keydown", handleEnterKey("Field invalid. Please check for typos."));
+  } else {
+    const handleEmailValidation = () => {
+      if (emailInvalid()) {
+        disableSubmitBtn();
+      } else {
+        submitBtn.removeAttribute("disabled");
+        emailField.style = "";
+        submitBtn.style = "";
       }
-    });
+    };
+
+    emailField.addEventListener("input", handleEmailValidation);
+    emailField.addEventListener("focusout", handleEmailFocusOut);
+    form.addEventListener("keydown", handleEnterKey("Email field invalid."));
   }
 
   const handleError = () => {
@@ -148,13 +465,13 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
   const handleKlaviyo = async (e) => {
     const formData = new FormData(e.target);
     if (hasPhoneNumber) {
-      phoneField.value.trim === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
+      phoneField.value.trim() === "" ? formData.set("phone_number", "") : formData.set("phone_number", iti.getNumber());
       phoneField.value = iti.getNumber();
     }
     klaviyo.customTextFields = klaviyo.customTextFields || [];
     klaviyo.customCheckFields = klaviyo.customCheckFields || [];
     klaviyo.forceChecksTrue = klaviyo.forceChecksTrue || [];
-    if (hasPhoneNumber && iti.getNumber().trim !== "" && !document.querySelector("[name='sms-consent']")) {
+    if (hasPhoneNumber && iti.getNumber().trim() !== "" && !document.querySelector("[name='sms-consent']")) {
       klaviyo.forceChecksTrue.push("sms-consent");
     }
     formData.append("$fields", ["accepts-marketing", ...klaviyo.customTextFields, ...klaviyo.customCheckFields, ...klaviyo.forceChecksTrue, ...Object.keys(utms)]);
@@ -196,8 +513,8 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
       }
     }
 
-    if (hasPhoneNumber){
-      if(phoneNumberIsExternal) body.phone = form.querySelector("[name='phone_number']").value;
+    if (hasPhoneNumber) {
+      if (phoneNumberIsExternal) body.phone = form.querySelector("[name='phone_number']").value;
       else body.phone = iti.getNumber() || "";
     }
     if (ghl.fields.includes("full_name")) body.full_name = form.querySelector("[name='first_name']").value;
@@ -211,8 +528,8 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     if (ghl.fields.includes("postal_code")) body.postal_code = form.querySelector("[name='postal_code']")?.value || "";
     if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
     ghl.customFields?.forEach((fieldPair) => {
-      fieldName = fieldPair[0];
-      fieldId = fieldPair[1];
+      const fieldName = fieldPair[0];
+      const fieldId = fieldPair[1];
       body[fieldId] = form.querySelector(`[name='${fieldName}']`)?.value || "";
     });
     body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
@@ -234,7 +551,7 @@ const handleForm = ({ formId, submitBtnId, hasPhoneNumber, phoneNumberIsRequired
     } catch {
       return Promise.reject("GHL response was not ok");
     }
-    const endpoint = ghl.isSurvey ? "https://backend.leadconnectorhq.com/surveys/submit" : "https://backend.leadconnectorhq.com/forms/submit"
+    const endpoint = ghl.isSurvey ? "https://backend.leadconnectorhq.com/surveys/submit" : "https://backend.leadconnectorhq.com/forms/submit";
     const response = await fetch(endpoint, {
       method: "POST",
       body: formData,

@@ -25,6 +25,7 @@
       isSurvey: false,
       captchaToken: "",
       hasMida: false, //value would be the field id for the uuid
+      hasTaboola: false, //value would be the field id
       fields: ["full_name","email","phone"]
       customFields: [["message","testId"],]
     },

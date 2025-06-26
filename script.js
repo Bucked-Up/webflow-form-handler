@@ -4,6 +4,7 @@ const handleForm = ({
   hasPhoneNumber,
   phoneNumberIsRequired,
   phoneNumberIsExternal,
+  advancedEmailCheck,
   klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined },
   ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined, hasTaboola: undefined },
   hubspot = { endpoint: undefined },
@@ -49,6 +50,7 @@ const handleForm = ({
   };
   disableSubmitBtn();
   const emailInvalid = () => {
+    if (!advancedEmailCheck) return true;
     const email = form.querySelector("[name='email']").value;
     const tldTypos = [
       // Primary TLD typo variations

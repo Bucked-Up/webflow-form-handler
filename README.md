@@ -19,6 +19,7 @@
     hasPhoneNumber: false,
     phoneNumberIsRequired: false,
     phoneNumberIsExternal: false,
+    advancedEmailCheck: false,
     ghl: { //optional
       formId: "",
       location_id: "",

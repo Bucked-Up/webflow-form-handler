@@ -50,7 +50,7 @@ const handleForm = ({
   };
   disableSubmitBtn();
   const emailInvalid = () => {
-    if (!advancedEmailCheck) return true;
+    if (!advancedEmailCheck) return false;
     const email = form.querySelector("[name='email']").value;
     const tldTypos = [
       // Primary TLD typo variations

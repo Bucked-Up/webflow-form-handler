@@ -512,7 +512,7 @@ const handleForm = ({
         }
       }
     }
-    
+
     if (ghl.hasTaboola) {
       body[ghl.hasTaboola] = urlParams.get("tbclid");
     }
@@ -606,6 +606,11 @@ const handleForm = ({
       if (custom.customFunc) tasks.push(handleCustom());
 
       if (tasks.length) await Promise.all(tasks);
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "form-submitted",
+      });
 
       if (formDone.style.display === "block") submitFunction();
       else initObserver();

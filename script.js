@@ -516,7 +516,7 @@ const handleForm = ({
     }
 
     if (ghl.hasTaboola) {
-      body[ghl.hasTaboola] = urlParams.get("tbclid");
+      body[ghl.hasTaboola] = urlParams.get("tblci");
     }
 
     if (hasPhoneNumber) {

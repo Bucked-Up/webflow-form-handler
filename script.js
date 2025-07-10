@@ -6,7 +6,7 @@ const handleForm = ({
   phoneNumberIsExternal,
   advancedEmailCheck,
   klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined },
-  ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasMida: undefined, hasTaboola: undefined },
+  ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasPath: undefined, hasMida: undefined, hasTaboola: undefined },
   hubspot = { endpoint: undefined },
   custom = { customFunc: undefined, hasCaptcha: undefined },
   submitFunction = () => {},
@@ -517,6 +517,10 @@ const handleForm = ({
 
     if (ghl.hasTaboola) {
       body[ghl.hasTaboola] = urlParams.get("tbclid");
+    }
+
+    if (ghl.hasPath) {
+      body[ghl.hasPath] = window.location.pathname;
     }
 
     if (hasPhoneNumber) {

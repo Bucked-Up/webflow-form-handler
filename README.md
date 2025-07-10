@@ -25,6 +25,7 @@
       location_id: "",
       isSurvey: false,
       captchaToken: "",
+      hasPath: false, //value would be the field id
       hasMida: false, //value would be the field id for the uuid
       hasTaboola: false, //value would be the field id
       fields: ["full_name","email","phone"]

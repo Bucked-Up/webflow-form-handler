@@ -409,9 +409,9 @@ const handleForm = ({
     };
 
     phoneField.addEventListener("input", handleValidation);
-    emailField.addEventListener("input", handleValidation);
+    emailField?.addEventListener("input", handleValidation);
     phoneField.addEventListener("focusout", handlePhoneFocusOut);
-    emailField.addEventListener("focusout", handleEmailFocusOut);
+    emailField?.addEventListener("focusout", handleEmailFocusOut);
     form.addEventListener("keydown", handleEnterKey("Field invalid. Please check for typos."));
   } else {
     const handleEmailValidation = () => {
@@ -424,8 +424,8 @@ const handleForm = ({
       }
     };
 
-    emailField.addEventListener("input", handleEmailValidation);
-    emailField.addEventListener("focusout", handleEmailFocusOut);
+    emailField?.addEventListener("input", handleEmailValidation);
+    emailField?.addEventListener("focusout", handleEmailFocusOut);
     form.addEventListener("keydown", handleEnterKey("Email field invalid."));
   }
 

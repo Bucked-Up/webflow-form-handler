@@ -537,16 +537,24 @@ const handleForm = ({
     if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";
     if (ghl.fields.includes("postal_code")) body.postal_code = form.querySelector("[name='postal_code']")?.value || "";
     if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
+    if (ghl.fields.includes("terms_and_conditions")) {
+      const termsFields = Array.from(document.querySelectorAll("[name='terms_and_conditions']"));
+      if (termsFields.some((field) => field.checked)) {
+        body.terms_and_conditions = "";
+        termsFields.forEach((field) => {
+          if (field.checked) body.terms_and_conditions = `${body.terms_and_conditions}; ${field.value}`;
+        });
+      }
+    } else body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
     ghl.customFields?.forEach((fieldPair) => {
       const fieldName = fieldPair[0];
       const fieldId = fieldPair[1];
       let field = form.querySelector(`[name='${fieldName}']`);
-      if(field?.type === "radio"){
-        field = form.querySelector(`[name='${fieldName}']:checked`)
+      if (field?.type === "radio") {
+        field = form.querySelector(`[name='${fieldName}']:checked`);
       }
       body[fieldId] = field?.value || "";
     });
-    body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
     body.formId = ghl.formId;
     body.location_id = ghl.location_id;
     body.eventData = {};

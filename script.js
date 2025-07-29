@@ -502,7 +502,7 @@ const handleForm = ({
 
     if (ghl.hasMida) {
       try {
-        body[ghl.hasMida] = `${window.location.pathname}: ${JSON.parse(localStorage.getItem("_variant_result"))[JSON.parse(localStorage.getItem("_abcache"))[0].test_id].vaId}`;
+        body[ghl.hasMida] = `${window.location.pathname} ${JSON.parse(localStorage.getItem("_abcache"))[0].test_id} ${JSON.parse(localStorage.getItem("_variant_result"))[JSON.parse(localStorage.getItem("_abcache"))[0].test_id].vaId}`;
       } catch (e) {
         console.error(e);
       }

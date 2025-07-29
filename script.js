@@ -502,16 +502,9 @@ const handleForm = ({
 
     if (ghl.hasMida) {
       try {
-        const midaUuid = await mida.uuid();
-        body[ghl.hasMida] = midaUuid;
+        body[ghl.hasMida] = `${window.location.pathname}: ${JSON.parse(localStorage.getItem("_variant_result"))[JSON.parse(localStorage.getItem("_abcache"))[0].test_id].vaId}`;
       } catch (e) {
         console.error(e);
-        try {
-          const midaUuid = mida.uuid;
-          body[ghl.hasMida] = midaUuid;
-        } catch (e) {
-          console.error(e);
-        }
       }
     }
 

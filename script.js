@@ -624,6 +624,10 @@ const handleForm = ({
       });
 
       if (formDone.style.display === "block") submitFunction();
+      else if (tasks.length)
+        setTimeout(() => {
+          submitFunction();
+        }, 5000);
       else initObserver();
     } catch (e) {
       trySentry({ error: JSON.stringify(e) });

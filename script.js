@@ -627,8 +627,8 @@ const handleForm = ({
       else if (tasks.length)
         setTimeout(() => {
           submitFunction();
-        }, 5000);
-      else initObserver();
+        }, 6000);
+      initObserver();
     } catch (e) {
       trySentry({ error: JSON.stringify(e) });
       handleError();

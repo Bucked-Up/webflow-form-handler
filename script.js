@@ -316,6 +316,13 @@ const handleForm = ({
       ".com[",
       ".com}",
       ".com{",
+
+      "@gmail.clm",
+      "@hmail.com",
+      "@gmsil.com",
+      "@yqhoo.com",
+      "@gamil.com",
+      "@gmil.com",
     ];
     return !/^(?!.*\.\.)([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,24}$/.test(email) || tldTypos.some((t) => email.toLowerCase().endsWith(t));
   };

@@ -162,6 +162,7 @@ const handleForm = ({
 
       // Common domain typos (major email providers)
       ".gamil.com",
+      ".gmai.com",
       ".gmaill.com",
       ".gnail.com",
       ".gmail.con",

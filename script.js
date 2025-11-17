@@ -90,7 +90,6 @@ const handleForm = ({
       ".c9m",
 
       // Other TLD errors
-      ".net",
       ".netw",
       ".net.",
       ".ne",
@@ -108,8 +107,6 @@ const handleForm = ({
       ".org\\",
 
       // Education TLDs
-      ".ed",
-      ".edu",
       ".edu.",
       ".ed.",
       ".edu,",
@@ -621,12 +618,13 @@ const handleForm = ({
       window.dataLayer.push({
         event: "form-submitted",
       });
-
+      console.log("asddsaasddsa");
       if (formDone.style.display === "block") submitFunction();
       else if (tasks.length)
         setTimeout(() => {
           submitFunction();
         }, 6000);
+      console.log("123asdasd");
       initObserver();
     } catch (e) {
       trySentry({ error: JSON.stringify(e) });

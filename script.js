@@ -526,6 +526,7 @@ const handleForm = ({
     if (ghl.fields.includes("state")) body.state = form.querySelector("[name='state']")?.value || "";
     if (ghl.fields.includes("postal_code")) body.postal_code = form.querySelector("[name='postal_code']")?.value || "";
     if (ghl.fields.includes("organization")) body.organization = form.querySelector("[name='company']")?.value || "";
+    if (ghl.fields.includes("website")) body.organization = form.querySelector("[name='website']")?.value || "";
     if (ghl.fields.includes("terms_and_conditions")) {
       const termsFields = Array.from(document.querySelectorAll("[name='terms_and_conditions']"));
       if (termsFields.some((field) => field.checked)) {

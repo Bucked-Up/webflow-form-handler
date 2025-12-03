@@ -532,7 +532,7 @@ const handleForm = ({
       if (termsFields.some((field) => field.checked)) {
         body.terms_and_conditions = "";
         termsFields.forEach((field) => {
-          if (field.checked) body.terms_and_conditions = `${body.terms_and_conditions}; ${field.parentElement.querySelector("[for='terms_and_conditions']").textContent}`;
+          if (field.checked) body.terms_and_conditions = `${body.terms_and_conditions ? body.terms_and_conditions + "; ": ""}${field.parentElement.querySelector("[for='terms_and_conditions']").textContent}`;
         });
       }
     } else body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";

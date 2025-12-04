@@ -619,6 +619,9 @@ const handleForm = ({
       window.dataLayer.push({
         event: "form-submitted",
       });
+      window.dataLayer.push({
+        event: "form_submitted",
+      });
       if (formDone.style.display === "block") submitFunction();
       else if (tasks.length)
         setTimeout(() => {

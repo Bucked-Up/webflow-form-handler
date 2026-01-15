@@ -532,14 +532,25 @@ const handleForm = ({
       if (termsFields.some((field) => field.checked)) {
         body.terms_and_conditions = "";
         termsFields.forEach((field) => {
-          if (field.checked) body.terms_and_conditions = `${body.terms_and_conditions ? body.terms_and_conditions + "; ": ""}${field.parentElement.querySelector("[for='terms_and_conditions']").textContent}`;
+          if (field.checked) body.terms_and_conditions = `${body.terms_and_conditions ? body.terms_and_conditions + "; " : ""}${field.parentElement.querySelector("[for='terms_and_conditions']").textContent}`;
         });
       }
     } else body.terms_and_conditions = "I agree to terms & conditions provided by the company. By providing my phone number, I agree to receive text messages from the business.";
     ghl.customFields?.forEach((fieldPair) => {
       const fieldName = fieldPair[0];
       const fieldId = fieldPair[1];
+      const fieldType = fieldPair[2];
       let field = form.querySelector(`[name='${fieldName}']`);
+      if (fieldType == "file") {
+        const allowedExt = ["doc", "docx", "txt", "pdf", "jpg", "jpeg", "png"];
+        const ext = field.files[0].name.split(".").pop().toLowerCase();
+        if (!allowedExt.includes(ext)) {
+          alert("File type not supported.");
+          throw new Error("File type not supported.");
+        }
+        formData.append(fieldId, field.files[0], field.files[0].name);
+        return;
+      }
       if (field?.type === "radio") {
         field = form.querySelector(`[name='${fieldName}']:checked`);
       }

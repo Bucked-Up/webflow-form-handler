@@ -583,6 +583,8 @@ const handleForm = ({
     if (!response.ok) {
       return Promise.reject("GHL response was not ok");
     }
+    const data = await response.json()
+    return data
   };
 
   const handleHubspot = async () => {
@@ -618,9 +620,10 @@ const handleForm = ({
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
+      let ghlResponse;
       const tasks = [];
       if (klaviyo.klaviyoA) tasks.push(handleKlaviyo(e));
-      if (ghl.formId) tasks.push(handleGHL());
+      if (ghl.formId) tasks.push(handleGHL().then(r => (ghlResponse = r)));
       if (hubspot.endpoint) tasks.push(handleHubspot());
       if (custom.customFunc) tasks.push(handleCustom());
 
@@ -633,10 +636,10 @@ const handleForm = ({
       window.dataLayer.push({
         event: "form_submitted",
       });
-      if (formDone.style.display === "block") submitFunction();
+      if (formDone.style.display === "block") submitFunction({ghlResponse});
       else if (tasks.length)
         setTimeout(() => {
-          submitFunction();
+          submitFunction({ghlResponse});
         }, 6000);
       initObserver();
     } catch (e) {

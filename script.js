@@ -370,15 +370,18 @@ const handleForm = ({
             success(cookieCountry);
             return;
           }
-          const response = await fetch("https://get.geojs.io/v1/ip/country.json");
+          const response = await fetch("https://api.country.is/");
           const data = await response.json();
-          if (response.ok) {
+          if (response.ok && data.country) {
             document.cookie = `user_country=${data.country};${cookieConfig}`;
             success(data.country);
-          } else throw new Error("Error Fetching Ip", response, data);
+          } else{
+            success("US");
+            console.error("Failed to fetch country")
+          }
         } catch (e) {
+          success("US");
           console.warn(e);
-          failure();
         }
       },
     });

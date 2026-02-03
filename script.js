@@ -6,7 +6,7 @@ const handleForm = ({
   phoneNumberIsExternal,
   advancedEmailCheck,
   klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined },
-  ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, fields: undefined, customFields: undefined, hasPath: undefined, hasMida: undefined, hasTaboola: undefined },
+  ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, updateContactOnly: undefined, fields: undefined, customFields: undefined, hasPath: undefined, hasMida: undefined, hasTaboola: undefined },
   hubspot = { endpoint: undefined },
   custom = { customFunc: undefined, hasCaptcha: undefined },
   submitFunction = () => {},
@@ -519,6 +519,7 @@ const handleForm = ({
       if (phoneNumberIsExternal) body.phone = form.querySelector("[name='phone_number']").value;
       else body.phone = iti.getNumber() || "";
     }
+    if (ghl.updateContactOnly) body.updateContactOnly = true;
     if (ghl.fields.includes("full_name")) body.full_name = form.querySelector("[name='first_name']").value;
     if (ghl.fields.includes("first_name")) body.first_name = form.querySelector("[name='first_name']").value;
     if (ghl.fields.includes("last_name")) body.last_name = form.querySelector("[name='last_name']").value;

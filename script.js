@@ -4,6 +4,7 @@ const handleForm = ({
   hasPhoneNumber,
   phoneNumberIsRequired,
   phoneNumberIsExternal,
+  emailIsExternal,
   advancedEmailCheck,
   klaviyo = { customTextFields: undefined, customCheckFields: undefined, forceChecksTrue: undefined, klaviyoA: undefined, klaviyoG: undefined },
   ghl = { formId: undefined, location_id: undefined, isSurvey: undefined, captchaToken: undefined, updateContactOnly: undefined, fields: undefined, customFields: undefined, hasPath: undefined, hasMida: undefined, hasTaboola: undefined },
@@ -48,7 +49,7 @@ const handleForm = ({
     submitBtn.style.filter = "contrast(0.5)";
     submitBtn.style.cursor = "not-allowed";
   };
-  disableSubmitBtn();
+  if(!emailIsExternal && !phoneNumberIsExternal) disableSubmitBtn();
   const emailInvalid = () => {
     if (!advancedEmailCheck) return false;
     const email = form.querySelector("[name='email']").value;

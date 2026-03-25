@@ -49,7 +49,7 @@ const handleForm = ({
     submitBtn.style.filter = "contrast(0.5)";
     submitBtn.style.cursor = "not-allowed";
   };
-  if(!emailIsExternal && !phoneNumberIsExternal) disableSubmitBtn();
+  if (!emailIsExternal && !phoneNumberIsExternal) disableSubmitBtn();
   const emailInvalid = () => {
     if (!advancedEmailCheck) return false;
     const email = form.querySelector("[name='email']").value;
@@ -376,9 +376,9 @@ const handleForm = ({
           if (response.ok && data.country) {
             document.cookie = `user_country=${data.country};${cookieConfig}`;
             success(data.country);
-          } else{
+          } else {
             success("US");
-            console.error("Failed to fetch country")
+            console.error("Failed to fetch country");
           }
         } catch (e) {
           success("US");
@@ -559,6 +559,12 @@ const handleForm = ({
       if (field?.type === "radio") {
         field = form.querySelector(`[name='${fieldName}']:checked`);
       }
+      if (fieldType == "group") {
+        field = form.querySelector(`[name='${fieldName}']`);
+        if (!body[fieldId]) body[fieldId] = [];
+        body[fieldId].push(field?.value);
+        return;
+      }
       body[fieldId] = field?.value || "";
     });
     body.formId = ghl.formId;
@@ -588,8 +594,8 @@ const handleForm = ({
     if (!response.ok) {
       return Promise.reject("GHL response was not ok");
     }
-    const data = await response.json()
-    return data
+    const data = await response.json();
+    return data;
   };
 
   const handleHubspot = async () => {
@@ -628,7 +634,7 @@ const handleForm = ({
       let ghlResponse;
       const tasks = [];
       if (klaviyo.klaviyoA) tasks.push(handleKlaviyo(e));
-      if (ghl.formId) tasks.push(handleGHL().then(r => (ghlResponse = r)));
+      if (ghl.formId) tasks.push(handleGHL().then((r) => (ghlResponse = r)));
       if (hubspot.endpoint) tasks.push(handleHubspot());
       if (custom.customFunc) tasks.push(handleCustom());
 
@@ -641,10 +647,10 @@ const handleForm = ({
       window.dataLayer.push({
         event: "form_submitted",
       });
-      if (formDone.style.display === "block") submitFunction({ghlResponse});
+      if (formDone.style.display === "block") submitFunction({ ghlResponse });
       else if (tasks.length)
         setTimeout(() => {
-          submitFunction({ghlResponse});
+          submitFunction({ ghlResponse });
         }, 6000);
       initObserver();
     } catch (e) {

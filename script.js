@@ -561,6 +561,7 @@ const handleForm = ({
       }
       if (fieldType == "group") {
         field = form.querySelector(`[name='${fieldName}']`);
+        if (field?.type === "checkbox" && !field.checked) return;
         if (!body[fieldId]) body[fieldId] = [];
         body[fieldId].push(field?.value);
         return;

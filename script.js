@@ -568,6 +568,21 @@ const handleForm = ({
       }
       body[fieldId] = field?.value || "";
     });
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    try {
+      const ipResponse = await fetch("https://api.ipify.org/?format=json");
+      const ipData = await ipResponse.json();
+      body["user_ip"] = ipData.ip;
+    } catch {}
+    body["user_agent"] = navigator.userAgent;
+    body["user_fbc"] = urlParams.get("fbclid");
+    body["user_fbp"] = getCookie("_fbp");
+
     body.formId = ghl.formId;
     body.location_id = ghl.location_id;
     body.eventData = {};

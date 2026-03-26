@@ -27,6 +27,11 @@ const handleForm = ({
     }
   };
 
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
   const getTopLevelDomain = () => {
     const fullDomain = window.location.hostname;
     const domainRegex = /\.([a-z]{2,})\.([a-z]{2,})$/;
@@ -569,20 +574,6 @@ const handleForm = ({
       body[fieldId] = field?.value || "";
     });
 
-    function getCookie(name) {
-      const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-      return match ? decodeURIComponent(match[2]) : null;
-    }
-
-    try {
-      const ipResponse = await fetch("https://api.ipify.org/?format=json");
-      const ipData = await ipResponse.json();
-      body["user_ip"] = ipData.ip;
-    } catch {}
-    body["user_agent"] = navigator.userAgent;
-    body["user_fbc"] = urlParams.get("fbclid");
-    body["user_fbp"] = getCookie("_fbp");
-
     body.formId = ghl.formId;
     body.location_id = ghl.location_id;
     body.eventData = {};
@@ -656,12 +647,37 @@ const handleForm = ({
 
       if (tasks.length) await Promise.all(tasks);
 
+      const dataLayerObj = {};
+      try {
+        const ipResponse = await fetch("https://api.ipify.org/?format=json");
+        const ipData = await ipResponse.json();
+        dataLayerObj["user_ip"] = ipData.ip;
+      } catch {}
+      dataLayerObj["user_agent"] = navigator.userAgent;
+      dataLayerObj["user_fbc"] = urlParams.get("fbclid");
+      dataLayerObj["user_fbp"] = getCookie("_fbp");
+      dataLayerObj["event_id"] = "eventid" + dataLayerObj["user_fbp"] + Date.now() + Math.random().toString(36).substring(2, 7);
+      const formEmail = form.querySelector("[name='email']");
+      const formName = form.querySelector("[name='first_name']");
+      const formPhone = form.querySelector("[name='phone_number']");
+      const formZip = form.querySelector("[name='postal_code']");
+      [
+        { input: formEmail, id: "email" },
+        { input: formName, id: "first_name" },
+        { input: formPhone, id: "phone" },
+        { input: formZip, id: "zip" },
+      ].forEach((el) => {
+        if (el.input) dataLayerObj[el.id] = el.input.value;
+      });
+
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "form-submitted",
+        ...dataLayerObj,
       });
       window.dataLayer.push({
         event: "form_submitted",
+        ...dataLayerObj,
       });
       if (formDone.style.display === "block") submitFunction({ ghlResponse });
       else if (tasks.length)
